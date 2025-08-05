@@ -1,0 +1,84 @@
+1.启动MYSQL
+sudo service mysql start
+
+2.启动向量数据库
+redis-stack-server -port 6379
+
+3.启动api
+cd /root/autodl-tmp/newtts/main/manager-api/
+mvn spring-boot:run
+
+4.启动智控台web
+cd /root/autodl-tmp/newtts/main/manager-web
+npm run serve
+
+
+启动web服务后，同时也可以访问测试页：
+https://u568363-a2aa-d6cc2d9d.nmb1.seetacloud.com:8443/test/test_page.html
+
+
+
+5.启动语音服务器
+conda activate llama
+cd /root/autodl-tmp/newtts/main/server
+python app.py
+
+
+注意：语音服务器地址格式为：
+wss://u568363-a2aa-d6cc2d9d.nmb1.seetacloud.com:8443/server
+
+
+6.启动声纹服务器
+
+conda activate voiceprint-api
+cd /root/autodl-tmp/newtts/main/manager-web/voiceprint-api
+python start_server.py
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------
+安装：
+1.autodl-tmp/xiaozhi-esp32-server/main/manager-web/vue.config.js配置端口为6006
+
+2.sudo apt update  
+sudo apt install openjdk-21-jdk
+
+3.java -version
+
+sudo apt install maven
+
+mvn -version
+
+cd main/manager-api  
+mvn spring-boot:run
+
+
+
+
+主要：
+find /root/autodl-tmp/xiaozhi-esp32-server/main/manager-api -name "*.ipynb_checkpoints" -type d -exec rm -rf {} +  
+
+find /root/autodl-tmp/xiaozhi-esp32-server/main/manager-api -name "*-checkpoint.java" -delete
+
+
+
+
+
+
+        // 添加新的代理路径给外部 xiaozhi-server 使用  
+      '/api': {
+          target: 'http://127.0.0.1:8002',  
+          changeOrigin: true,  
+          pathRewrite: {  
+            '^/api': '/xiaozhi'  // 将 /api 重写为 /xiaozhi  
+          }  
+      }  
+
+
+
+
+manager-api:  
+  url: http://第一台服务器IP:6006/api  
+  secret: 你的server.secret值
