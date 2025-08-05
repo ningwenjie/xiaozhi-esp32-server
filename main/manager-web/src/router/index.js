@@ -124,6 +124,29 @@ const routes = [
       return import('../views/ProviderManagement.vue')
     }
   },
+  // AI陪伴功能模块路由
+  {
+    path: '/scenario-config',
+    name: 'ScenarioConfig',
+    component: function () {
+      return import('../views/ScenarioConfig.vue')
+    },
+    meta: {
+      requiresAuth: true,
+      title: '场景配置'
+    }
+  },
+  {
+    path: '/scenario-step-config/:scenarioId',
+    name: 'ScenarioStepConfig',
+    component: function () {
+      return import('../views/ScenarioStepConfig.vue')
+    },
+    meta: {
+      requiresAuth: true,
+      title: '对话步骤配置'
+    }
+  },
 ]
 const router = new VueRouter({
   base: process.env.VUE_APP_PUBLIC_PATH || '/',

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xiaozhi.modules.agent.dao.StepTemplateDao">
+    
+    <!-- 根据模板类型查询模板列表 -->
+    <select id="selectByTemplateType" resultType="xiaozhi.modules.agent.entity.StepTemplateEntity">
+        SELECT * FROM ai_step_template 
+        WHERE template_type = #{templateType}
+        ORDER BY sort_order ASC, created_at DESC
+    </select>
+    
+    <!-- 查询默认模板列表 -->
+    <select id="selectDefaultTemplates" resultType="xiaozhi.modules.agent.entity.StepTemplateEntity">
+        SELECT * FROM ai_step_template 
+        WHERE is_default = 1
+        ORDER BY sort_order ASC, created_at DESC
+    </select>
+    
+    <!-- 根据模板编码查询模板 -->
+    <select id="selectByTemplateCode" resultType="xiaozhi.modules.agent.entity.StepTemplateEntity">
+        SELECT * FROM ai_step_template 
+        WHERE template_code = #{templateCode}
+    </select>
+    
+    <!-- 根据模板类型和是否默认查询模板列表 -->
+    <select id="selectByTypeAndDefault" resultType="xiaozhi.modules.agent.entity.StepTemplateEntity">
+        SELECT * FROM ai_step_template 
+        WHERE template_type = #{templateType} AND is_default = #{isDefault}
+        ORDER BY sort_order ASC, created_at DESC
+    </select>
+    
+</mapper> 

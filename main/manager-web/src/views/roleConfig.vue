@@ -54,6 +54,12 @@
                         show-word-limit class="form-textarea"
                         :disabled="form.model.memModelId !== 'Memory_mem_local_short'" />
                     </el-form-item>
+                    <el-form-item label="场景配置：">
+                      <el-button type="primary" @click="goToScenarioConfig">
+                        配置场景对话
+                      </el-button>
+                      <span class="hint-text">配置引导式场景对话，帮助儿童练习表达需求</span>
+                    </el-form-item>
                     <el-form-item label="语言编码：" style="display: none;">
                       <el-input v-model="form.langCode" placeholder="请输入语言编码，如：zh_CN" maxlength="10" show-word-limit
                         class="form-input" />
@@ -192,6 +198,12 @@ export default {
   methods: {
     goToHome() {
       this.$router.push('/home');
+    },
+    goToScenarioConfig() {
+      this.$router.push({
+        name: 'ScenarioConfig',
+        query: { agentId: this.$route.query.agentId }
+      });
     },
     saveConfig() {
       const configData = {

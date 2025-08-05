@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xiaozhi.modules.agent.dao.ScenarioDao">
+    
+    <!-- 根据智能体ID查询场景列表 -->
+    <select id="selectByAgentId" resultType="xiaozhi.modules.agent.entity.ScenarioEntity">
+        SELECT * FROM ai_scenario 
+        WHERE agent_id = #{agentId}
+        ORDER BY sort_order ASC, created_at DESC
+    </select>
+    
+    <!-- 根据智能体ID和场景类型查询场景列表 -->
+    <select id="selectByAgentIdAndType" resultType="xiaozhi.modules.agent.entity.ScenarioEntity">
+        SELECT * FROM ai_scenario 
+        WHERE agent_id = #{agentId} AND scenario_type = #{scenarioType}
+        ORDER BY sort_order ASC, created_at DESC
+    </select>
+    
+    <!-- 根据智能体ID查询启用的场景列表 -->
+    <select id="selectActiveByAgentId" resultType="xiaozhi.modules.agent.entity.ScenarioEntity">
+        SELECT * FROM ai_scenario 
+        WHERE agent_id = #{agentId} AND is_active = 1
+        ORDER BY sort_order ASC, created_at DESC
+    </select>
+    
+    <!-- 根据场景编码查询场景 -->
+    <select id="selectByScenarioCode" resultType="xiaozhi.modules.agent.entity.ScenarioEntity">
+        SELECT * FROM ai_scenario 
+        WHERE scenario_code = #{scenarioCode}
+    </select>
+    
+    <!-- 根据触发关键词查询场景 -->
+    <select id="selectByTriggerKeyword" resultType="xiaozhi.modules.agent.entity.ScenarioEntity">
+        SELECT * FROM ai_scenario 
+        WHERE agent_id = #{agentId} 
+        AND is_active = 1 
+        AND trigger_type = 'voice'
+        AND JSON_CONTAINS(trigger_keywords, JSON_QUOTE(#{keyword}))
+        ORDER BY sort_order ASC
+    </select>
+    
+    <!-- 根据触发卡片查询场景 -->
+    <select id="selectByTriggerCard" resultType="xiaozhi.modules.agent.entity.ScenarioEntity">
+        SELECT * FROM ai_scenario 
+        WHERE agent_id = #{agentId} 
+        AND is_active = 1 
+        AND trigger_type = 'visual'
+        AND JSON_CONTAINS(trigger_cards, JSON_QUOTE(#{cardCode}))
+        ORDER BY sort_order ASC
+    </select>
+    
+    <!-- 更新场景启用状态 -->
+    <update id="updateActiveStatus">
+        UPDATE ai_scenario 
+        SET is_active = #{isActive}, updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+    
+</mapper> 

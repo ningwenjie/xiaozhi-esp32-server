@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小智AI陪伴功能测试页面</title>
+    <style>
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 10px 20px 10px 20px;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+
+        .section h2 {
+            margin-top: 0;
+            color: #444;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+        }
+
+        .section h2 .toggle-button {
+            margin-left: auto;
+            padding: 4px 12px;
+            font-size: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            height: 28px;
+            line-height: 20px;
+        }
+
+        button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4285f4;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #3367d6;
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .config-panel {
+            display: none;
+            transition: all 0.3s ease;
+            margin-top: 5px;
+            padding: 5px 0;
+        }
+
+        .config-panel.expanded {
+            display: block;
+        }
+
+        .control-panel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .config-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            min-width: 300px;
+        }
+
+        .config-item label {
+            width: 100px;
+            text-align: right;
+            margin-right: 10px;
+            color: #666;
+            font-size: 13px;
+        }
+
+        .config-item input,
+        .config-item select {
+            flex-grow: 1;
+            padding: 6px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            min-width: 150px;
+        }
+
+        .connection-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .connection-controls input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            min-width: 200px;
+        }
+
+        .connection-controls button {
+            white-space: nowrap;
+            padding: 8px 15px;
+        }
+
+        .device-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-left: 20px;
+            padding: 0 15px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            height: 28px;
+            line-height: 28px;
+        }
+
+        .device-info span {
+            color: #666;
+            font-size: 13px;
+        }
+
+        .device-info strong {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-left: 20px;
+            padding: 0 15px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            height: 28px;
+            line-height: 28px;
+        }
+
+        .connection-status span {
+            color: #666;
+            font-size: 13px;
+        }
+
+        .connection-status .status {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .scenario-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-left: 20px;
+            padding: 0 15px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            height: 28px;
+            line-height: 28px;
+        }
+
+        .scenario-info span {
+            color: #666;
+            font-size: 13px;
+        }
+
+        .scenario-info strong {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .conversation {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            background-color: white;
+            flex: 1;
+            margin-right: 10px;
+            min-width: 300px;
+        }
+
+        .message {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            max-width: 80%;
+        }
+
+        .user {
+            background-color: #e2f2ff;
+            margin-left: auto;
+            margin-right: 10px;
+            text-align: right;
+        }
+
+        .server {
+            background-color: #f0f0f0;
+            margin-right: auto;
+            margin-left: 10px;
+        }
+
+        .status {
+            color: #666;
+            font-style: italic;
+            font-size: 14px;
+            margin: 0;
+            padding: 0;
+        }
+
+        #logContainer {
+            margin-top: 0;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            font-family: monospace;
+            height: 300px;
+            overflow-y: auto;
+            flex: 1;
+            margin-left: 10px;
+            min-width: 300px;
+        }
+
+        .log-entry {
+            margin: 5px 0;
+            font-size: 12px;
+        }
+
+        .log-info {
+            color: #333;
+        }
+
+        .log-error {
+            color: #db4437;
+        }
+
+        .log-success {
+            color: #0f9d58;
+        }
+
+        .flex-container {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 16px;
+            color: #666;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .tab:hover {
+            color: #4285f4;
+        }
+
+        .tab.active {
+            color: #4285f4;
+            font-weight: bold;
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #4285f4;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .scenario-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .scenario-card:hover {
+            border-color: #4285f4;
+            box-shadow: 0 2px 8px rgba(66, 133, 244, 0.1);
+        }
+
+        .scenario-card.selected {
+            border-color: #4285f4;
+            background-color: #e8f2ff;
+        }
+
+        .scenario-card h3 {
+            margin: 0 0 8px 0;
+            color: #333;
+        }
+
+        .scenario-card .scenario-info {
+            display: flex;
+            gap: 15px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .scenario-card .scenario-info span {
+            background-color: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .record-button {
+            background-color: #db4437;
+        }
+
+        .record-button:hover {
+            background-color: #c53929;
+        }
+
+        .record-button.recording {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                background-color: #db4437;
+            }
+
+            50% {
+                background-color: #ff6659;
+            }
+
+            100% {
+                background-color: #db4437;
+            }
+        }
+
+        .voice-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .voice-status {
+            font-size: 12px;
+            color: #666;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>小智AI陪伴功能测试页面</h1>
+
+        <!-- 设备配置 -->
+        <div class="section">
+            <h2>
+                设备配置
+                <div class="device-info">
+                    <span>MAC: <strong id="displayMac"></strong></span>
+                    <span>客户端: <strong id="displayClient">ai_companion_test</strong></span>
+                </div>
+                <button class="toggle-button" id="toggleConfig">编辑</button>
+            </h2>
+            <div class="config-panel" id="configPanel">
+                <div class="control-panel">
+                    <div class="config-item">
+                        <label for="deviceMac">设备MAC:</label>
+                        <input type="text" id="deviceMac" placeholder="设备MAC地址">
+                    </div>
+                    <div class="config-item">
+                        <label for="deviceName">设备名称:</label>
+                        <input type="text" id="deviceName" value="AI陪伴测试设备" placeholder="设备名称">
+                    </div>
+                    <div class="config-item">
+                        <label for="clientId">客户端ID:</label>
+                        <input type="text" id="clientId" value="ai_companion_test" placeholder="客户端ID">
+                    </div>
+                    <div class="config-item">
+                        <label for="token">认证Token:</label>
+                        <input type="text" id="token" value="your-token1" placeholder="认证Token">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 连接信息 -->
+        <div class="section">
+            <h2>
+                连接信息
+                <div class="device-info">
+                    <span>API: <strong id="apiStatus">未连接</strong></span>
+                    <span>WS: <strong id="connectionStatus">未连接</strong></span>
+                </div>
+            </h2>
+            <div class="connection-controls">
+                <input type="text" id="apiUrl" value="http://127.0.0.1:8080" placeholder="API服务器地址" />
+                <input type="text" id="serverUrl" value="ws://127.0.0.1:8000/xiaozhi/v1/" placeholder="WebSocket服务器地址" />
+                <button id="connectButton">连接</button>
+                <button id="authTestButton">测试认证</button>
+            </div>
+        </div>
+
+        <!-- 智能体和场景选择 -->
+        <div class="section">
+            <h2>智能体和场景选择</h2>
+            <div class="control-panel">
+                <div class="config-item">
+                    <label for="agentSelect">选择智能体:</label>
+                    <select id="agentSelect" disabled>
+                        <option value="">请先连接服务器...</option>
+                    </select>
+                </div>
+                <div class="config-item">
+                    <label for="scenarioSelect">选择场景:</label>
+                    <select id="scenarioSelect" disabled>
+                        <option value="">请先选择智能体...</option>
+                    </select>
+                </div>
+                <div class="config-item">
+                    <label for="childName">儿童姓名:</label>
+                    <input type="text" id="childName" value="小明" placeholder="儿童姓名">
+                </div>
+            </div>
+        </div>
+
+        <!-- 测试控制 -->
+        <div class="section">
+            <div class="tabs">
+                <button class="tab active" data-tab="text">文本测试</button>
+                <button class="tab" data-tab="voice">语音测试</button>
+                <button class="tab" data-tab="trigger">触发测试</button>
+            </div>
+
+            <div class="tab-content active" id="textTab">
+                <div class="control-panel">
+                    <div class="config-item">
+                        <label for="testInput">测试输入:</label>
+                        <input type="text" id="testInput" placeholder="输入测试文本..." disabled>
+                    </div>
+                    <div class="config-item">
+                        <button id="sendTestButton" disabled>发送测试</button>
+                        <button id="startScenarioButton" disabled>开始场景</button>
+                        <button id="stopScenarioButton" disabled>停止场景</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="voiceTab">
+                <div class="control-panel">
+                    <div class="config-item">
+                        <div class="voice-controls">
+                            <button id="recordButton" class="record-button" disabled>开始录音</button>
+                            <button id="stopRecordButton" disabled>停止录音</button>
+                            <span class="voice-status" id="voiceStatus">未连接</span>
+                        </div>
+                    </div>
+                    <div class="config-item">
+                        <label>语音提示:</label>
+                        <span style="color: #666; font-size: 12px;">
+                            点击"开始录音"按钮，说话后点击"停止录音"发送语音消息
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="triggerTab">
+                <div class="control-panel">
+                    <div class="config-item">
+                        <label for="triggerType">触发类型:</label>
+                        <select id="triggerType">
+                            <option value="voice">语音触发</option>
+                            <option value="visual">视觉触发</option>
+                            <option value="button">按键触发</option>
+                        </select>
+                    </div>
+                    <div class="config-item">
+                        <label for="triggerValue">触发值:</label>
+                        <input type="text" id="triggerValue" placeholder="输入触发关键词或编码">
+                    </div>
+                    <div class="config-item">
+                        <button id="testTriggerButton" disabled>测试触发</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 会话记录 -->
+        <div class="section">
+            <h2>会话记录</h2>
+            <div class="flex-container">
+                <div id="conversation" class="conversation"></div>
+                <div id="logContainer">
+                    <div class="log-entry log-info">准备就绪，请连接服务器开始测试...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 全局变量
+        let websocket = null;
+        let isConnected = false;
+        let currentAgent = null;
+        let currentScenario = null;
+        let isScenarioActive = false;
+
+        // DOM元素
+        const connectButton = document.getElementById('connectButton');
+        const serverUrlInput = document.getElementById('serverUrl');
+        const apiUrlInput = document.getElementById('apiUrl');
+        const connectionStatus = document.getElementById('connectionStatus');
+        const apiStatus = document.getElementById('apiStatus');
+        const agentSelect = document.getElementById('agentSelect');
+        const scenarioSelect = document.getElementById('scenarioSelect');
+        const testInput = document.getElementById('testInput');
+        const sendTestButton = document.getElementById('sendTestButton');
+        const startScenarioButton = document.getElementById('startScenarioButton');
+        const stopScenarioButton = document.getElementById('stopScenarioButton');
+        const testTriggerButton = document.getElementById('testTriggerButton');
+        const conversationDiv = document.getElementById('conversation');
+        const logContainer = document.getElementById('logContainer');
+
+        // 日志函数
+        function log(message, type = 'info') {
+            const lines = message.split('\n');
+            const now = new Date();
+            const timestamp = `[${now.toLocaleTimeString()}.${now.getMilliseconds().toString().padStart(3, '0')}] `;
+            
+            lines.forEach((line, index) => {
+                const logEntry = document.createElement('div');
+                logEntry.className = `log-entry log-${type}`;
+                const prefix = index === 0 ? timestamp : ' '.repeat(timestamp.length);
+                logEntry.textContent = `${prefix}${line}`;
+                logEntry.style.whiteSpace = 'pre';
+                
+                if (type === 'error') {
+                    logEntry.style.color = 'red';
+                } else if (type === 'success') {
+                    logEntry.style.color = 'green';
+                } else if (type === 'warning') {
+                    logEntry.style.color = 'orange';
+                } else {
+                    logEntry.style.color = 'black';
+                }
+                
+                logContainer.appendChild(logEntry);
+            });
+
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        // 添加消息到会话记录
+        function addMessage(text, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'server'}`;
+            messageDiv.textContent = text;
+            conversationDiv.appendChild(messageDiv);
+            conversationDiv.scrollTop = conversationDiv.scrollHeight;
+        }
+
+        // 初始化事件监听器
+        function initEventListeners() {
+            // 设备配置面板折叠/展开
+            const toggleButton = document.getElementById('toggleConfig');
+            const configPanel = document.getElementById('configPanel');
+            const deviceMacInput = document.getElementById('deviceMac');
+            const clientIdInput = document.getElementById('clientId');
+            const displayMac = document.getElementById('displayMac');
+            const displayClient = document.getElementById('displayClient');
+
+            // 生成随机MAC地址
+            function generateRandomMac() {
+                const hexDigits = '0123456789ABCDEF';
+                let mac = '';
+                for (let i = 0; i < 6; i++) {
+                    if (i > 0) mac += ':';
+                    for (let j = 0; j < 2; j++) {
+                        mac += hexDigits.charAt(Math.floor(Math.random() * 16));
+                    }
+                }
+                return mac;
+            }
+
+            // 从localStorage加载MAC地址，如果没有则生成新的
+            let savedMac = localStorage.getItem('aiCompanionDeviceMac');
+            if (!savedMac) {
+                savedMac = generateRandomMac();
+                localStorage.setItem('aiCompanionDeviceMac', savedMac);
+            }
+            deviceMacInput.value = savedMac;
+            displayMac.textContent = savedMac;
+
+            // 更新显示的值
+            function updateDisplayValues() {
+                const newMac = deviceMacInput.value;
+                displayMac.textContent = newMac;
+                displayClient.textContent = clientIdInput.value;
+                localStorage.setItem('aiCompanionDeviceMac', newMac);
+            }
+
+            // 监听输入变化
+            deviceMacInput.addEventListener('input', updateDisplayValues);
+            clientIdInput.addEventListener('input', updateDisplayValues);
+
+            // 初始更新显示值
+            updateDisplayValues();
+
+            // 切换面板显示
+            toggleButton.addEventListener('click', () => {
+                const isExpanded = configPanel.classList.contains('expanded');
+                configPanel.classList.toggle('expanded');
+                toggleButton.textContent = isExpanded ? '编辑' : '收起';
+            });
+
+            // 标签页切换
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+                    tab.classList.add('active');
+                    document.getElementById(`${tab.dataset.tab}Tab`).classList.add('active');
+                });
+            });
+
+            // 连接按钮
+            connectButton.addEventListener('click', connectToServer);
+
+            // 测试认证按钮
+            document.getElementById('authTestButton').addEventListener('click', testAuthentication);
+
+            // 智能体选择变化
+            agentSelect.addEventListener('change', loadScenarios);
+
+            // 场景选择变化
+            scenarioSelect.addEventListener('change', updateScenarioInfo);
+
+            // 测试按钮
+            sendTestButton.addEventListener('click', sendTestMessage);
+            startScenarioButton.addEventListener('click', startScenario);
+            stopScenarioButton.addEventListener('click', stopScenario);
+            testTriggerButton.addEventListener('click', testTrigger);
+
+            // 测试输入回车
+            testInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendTestMessage();
+            });
+        }
+
+        // 初始化应用
+        function initApp() {
+            initEventListeners();
+            initVoiceRecordingListeners();
+            log('小智AI陪伴功能测试页面初始化完成', 'success');
+            log('请配置设备信息并连接服务器开始测试', 'info');
+        }
+
+        // 连接WebSocket服务器
+        async function connectToServer() {
+            const apiUrl = apiUrlInput.value.trim();
+            const wsUrl = serverUrlInput.value.trim();
+            
+            if (apiUrl === '' || wsUrl === '') {
+                log('请输入API和WebSocket服务器地址', 'error');
+                return;
+            }
+
+            try {
+                // 获取配置
+                const config = getConfig();
+                
+                // 测试API连接
+                log('正在测试API连接...', 'info');
+                try {
+                    const response = await fetch(`${apiUrl}/agent/list`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`API连接失败: ${response.status} ${response.statusText}`);
+                    }
+
+                    const data = await response.json();
+                    if (data.code === 0) {
+                        log('API连接成功', 'success');
+                        apiStatus.textContent = '已连接';
+                        apiStatus.style.color = 'green';
+                    } else {
+                        throw new Error(`API响应错误: ${data.msg}`);
+                    }
+                } catch (error) {
+                    log(`API连接失败: ${error.message}`, 'error');
+                    apiStatus.textContent = '未连接';
+                    apiStatus.style.color = 'red';
+                    return;
+                }
+
+                // 连接WebSocket
+                log('正在连接WebSocket...', 'info');
+                let connUrl = new URL(wsUrl);
+                connUrl.searchParams.append('device-id', config.deviceId);
+                connUrl.searchParams.append('client-id', config.clientId);
+
+                websocket = new WebSocket(connUrl.toString());
+                websocket.binaryType = 'arraybuffer';
+
+                websocket.onopen = async () => {
+                    log(`已连接到WebSocket服务器: ${wsUrl}`, 'success');
+                    connectionStatus.textContent = '已连接';
+                    connectionStatus.style.color = 'green';
+                    isConnected = true;
+
+                    // 发送hello消息
+                    await sendHelloMessage();
+
+                    // 加载智能体列表
+                    await loadAgents();
+
+                    connectButton.textContent = '断开';
+                    connectButton.removeEventListener('click', connectToServer);
+                    connectButton.addEventListener('click', disconnectFromServer);
+                };
+
+                websocket.onclose = () => {
+                    log('WebSocket连接已断开', 'info');
+                    connectionStatus.textContent = '已断开';
+                    connectionStatus.style.color = 'red';
+                    isConnected = false;
+
+                    connectButton.textContent = '连接';
+                    connectButton.removeEventListener('click', disconnectFromServer);
+                    connectButton.addEventListener('click', connectToServer);
+
+                    // 禁用相关控件
+                    agentSelect.disabled = true;
+                    scenarioSelect.disabled = true;
+                    testInput.disabled = true;
+                    sendTestButton.disabled = true;
+                    startScenarioButton.disabled = true;
+                    stopScenarioButton.disabled = true;
+                    testTriggerButton.disabled = true;
+                };
+
+                websocket.onerror = (error) => {
+                    log(`WebSocket错误: ${error.message || '未知错误'}`, 'error');
+                    connectionStatus.textContent = '未连接';
+                    connectionStatus.style.color = 'red';
+                };
+
+                websocket.onmessage = function (event) {
+                    try {
+                        if (typeof event.data === 'string') {
+                            const message = JSON.parse(event.data);
+                            handleWebSocketMessage(message);
+                        } else {
+                            // 处理二进制数据（音频等）
+                            handleBinaryMessage(event.data);
+                        }
+                    } catch (error) {
+                        log(`WebSocket消息处理错误: ${error.message}`, 'error');
+                    }
+                };
+
+                connectionStatus.textContent = '连接中...';
+                connectionStatus.style.color = 'orange';
+            } catch (error) {
+                log(`连接错误: ${error.message}`, 'error');
+                connectionStatus.textContent = '未连接';
+                connectionStatus.style.color = 'red';
+            }
+        }
+
+        // 断开连接
+        function disconnectFromServer() {
+            if (websocket) {
+                websocket.close();
+            }
+        }
+
+        // 发送hello消息
+        async function sendHelloMessage() {
+            if (!websocket || websocket.readyState !== WebSocket.OPEN) return;
+
+            try {
+                const config = getConfig();
+                const helloMessage = {
+                    type: 'hello',
+                    device_id: config.deviceId,
+                    device_name: config.deviceName,
+                    device_mac: config.deviceMac,
+                    token: config.token,
+                    features: {
+                        mcp: true,
+                        ai_companion: true
+                    }
+                };
+
+                log('发送hello握手消息', 'info');
+                websocket.send(JSON.stringify(helloMessage));
+
+                return new Promise(resolve => {
+                    const timeout = setTimeout(() => {
+                        log('等待hello响应超时', 'error');
+                        resolve(false);
+                    }, 5000);
+
+                    const onMessageHandler = (event) => {
+                        try {
+                            const response = JSON.parse(event.data);
+                            if (response.type === 'hello' && response.session_id) {
+                                log(`服务器握手成功，会话ID: ${response.session_id}`, 'success');
+                                clearTimeout(timeout);
+                                websocket.removeEventListener('message', onMessageHandler);
+                                resolve(true);
+                            }
+                        } catch (e) {
+                            // 忽略非JSON消息
+                        }
+                    };
+
+                    websocket.addEventListener('message', onMessageHandler);
+                });
+            } catch (error) {
+                log(`发送hello消息错误: ${error.message}`, 'error');
+                return false;
+            }
+        }
+
+        // 加载智能体列表
+        async function loadAgents() {
+            try {
+                const apiUrl = apiUrlInput.value.trim();
+                const response = await fetch(`${apiUrl}/agent/list`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`获取智能体列表失败: ${response.status}`);
+                }
+
+                const data = await response.json();
+                if (data.code === 0) {
+                    const agents = data.data || [];
+                    log(`获取到 ${agents.length} 个智能体`, 'success');
+
+                    // 清空并填充智能体选择框
+                    agentSelect.innerHTML = '<option value="">请选择智能体...</option>';
+                    agents.forEach(agent => {
+                        const option = document.createElement('option');
+                        option.value = agent.id;
+                        option.textContent = agent.agentName || agent.agentCode;
+                        agentSelect.appendChild(option);
+                    });
+
+                    agentSelect.disabled = false;
+                } else {
+                    throw new Error(`API响应错误: ${data.msg}`);
+                }
+            } catch (error) {
+                log(`加载智能体列表失败: ${error.message}`, 'error');
+            }
+        }
+
+        // 加载场景列表
+        async function loadScenarios() {
+            const agentId = agentSelect.value;
+            if (!agentId) {
+                scenarioSelect.innerHTML = '<option value="">请先选择智能体...</option>';
+                scenarioSelect.disabled = true;
+                return;
+            }
+
+            try {
+                const apiUrl = apiUrlInput.value.trim();
+                const response = await fetch(`${apiUrl}/scenario/agent/${agentId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`获取场景列表失败: ${response.status}`);
+                }
+
+                const data = await response.json();
+                if (data.code === 0) {
+                    const scenarios = data.data || [];
+                    log(`获取到 ${scenarios.length} 个场景`, 'success');
+
+                    // 清空并填充场景选择框
+                    scenarioSelect.innerHTML = '<option value="">请选择场景...</option>';
+                    scenarios.forEach(scenario => {
+                        const option = document.createElement('option');
+                        option.value = scenario.id;
+                        option.textContent = scenario.scenarioName;
+                        option.dataset.scenario = JSON.stringify(scenario);
+                        scenarioSelect.appendChild(option);
+                    });
+
+                    scenarioSelect.disabled = false;
+                    currentAgent = agentId;
+                } else {
+                    throw new Error(`API响应错误: ${data.msg}`);
+                }
+            } catch (error) {
+                log(`加载场景列表失败: ${error.message}`, 'error');
+            }
+        }
+
+        // 更新场景信息
+        function updateScenarioInfo() {
+            const selectedOption = scenarioSelect.selectedOptions[0];
+            if (selectedOption && selectedOption.dataset.scenario) {
+                try {
+                    currentScenario = JSON.parse(selectedOption.dataset.scenario);
+                    log(`已选择场景: ${currentScenario.scenarioName}`, 'success');
+                    
+                    // 启用相关控件
+                    testInput.disabled = false;
+                    sendTestButton.disabled = false;
+                    startScenarioButton.disabled = false;
+                    testTriggerButton.disabled = false;
+                } catch (error) {
+                    log(`解析场景信息失败: ${error.message}`, 'error');
+                }
+            } else {
+                currentScenario = null;
+                testInput.disabled = true;
+                sendTestButton.disabled = true;
+                startScenarioButton.disabled = true;
+                testTriggerButton.disabled = true;
+            }
+        }
+
+        // 处理WebSocket消息
+        function handleWebSocketMessage(message) {
+            log(`收到消息: ${JSON.stringify(message)}`, 'info');
+
+            if (message.type === 'hello') {
+                log(`服务器回应：${JSON.stringify(message, null, 2)}`, 'success');
+            } else if (message.type === 'tts') {
+                if (message.state === 'start') {
+                    log('服务器开始发送语音', 'info');
+                } else if (message.state === 'sentence_start') {
+                    log(`服务器发送语音段: ${message.text}`, 'info');
+                    if (message.text) {
+                        addMessage(message.text);
+                    }
+                } else if (message.state === 'sentence_end') {
+                    log(`语音段结束: ${message.text}`, 'info');
+                } else if (message.state === 'stop') {
+                    log('服务器语音传输结束', 'info');
+                }
+            } else if (message.type === 'stt') {
+                log(`识别结果: ${message.text}`, 'info');
+                addMessage(`[语音识别] ${message.text}`, true);
+            } else if (message.type === 'llm') {
+                log(`大模型回复: ${message.text}`, 'info');
+                if (message.text && message.text !== '😊') {
+                    addMessage(message.text);
+                }
+            } else if (message.type === 'scenario') {
+                // AI陪伴场景消息
+                handleScenarioMessage(message);
+            } else {
+                log(`未知消息类型: ${message.type}`, 'info');
+            }
+        }
+
+        // 处理场景消息
+        function handleScenarioMessage(message) {
+            if (message.state === 'start') {
+                log('场景对话开始', 'success');
+                isScenarioActive = true;
+                startScenarioButton.disabled = true;
+                stopScenarioButton.disabled = false;
+                addMessage('[场景开始]', false);
+            } else if (message.state === 'step') {
+                log(`场景步骤: ${message.message}`, 'info');
+                addMessage(message.message, false);
+            } else if (message.state === 'complete') {
+                log('场景对话完成', 'success');
+                isScenarioActive = false;
+                startScenarioButton.disabled = false;
+                stopScenarioButton.disabled = true;
+                addMessage('[场景完成]', false);
+            } else if (message.state === 'error') {
+                log(`场景错误: ${message.message}`, 'error');
+                isScenarioActive = false;
+                startScenarioButton.disabled = false;
+                stopScenarioButton.disabled = true;
+                addMessage(`[场景错误] ${message.message}`, false);
+            }
+        }
+
+        // 处理二进制消息
+        function handleBinaryMessage(data) {
+            log(`收到二进制数据，大小: ${data.byteLength}字节`, 'debug');
+            // 这里可以处理音频等二进制数据
+        }
+
+        // 获取配置
+        function getConfig() {
+            const deviceMac = document.getElementById('deviceMac').value.trim();
+            return {
+                deviceId: deviceMac,
+                deviceName: document.getElementById('deviceName').value.trim(),
+                deviceMac: deviceMac,
+                clientId: document.getElementById('clientId').value.trim(),
+                token: document.getElementById('token').value.trim()
+            };
+        }
+
+        // 测试认证
+        async function testAuthentication() {
+            log('开始测试认证...', 'info');
+            
+            const apiUrl = apiUrlInput.value.trim();
+            const wsUrl = serverUrlInput.value.trim();
+            
+            if (!apiUrl || !wsUrl) {
+                log('请输入API和WebSocket服务器地址', 'error');
+                return;
+            }
+
+            // 测试API连接
+            try {
+                const response = await fetch(`${apiUrl}/agent/list`);
+                if (response.ok) {
+                    log('API连接测试成功', 'success');
+                } else {
+                    log(`API连接测试失败: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                log(`API连接测试失败: ${error.message}`, 'error');
+            }
+
+            // 测试WebSocket连接
+            try {
+                const config = getConfig();
+                let url = new URL(wsUrl);
+                url.searchParams.append('device-id', config.deviceId);
+                url.searchParams.append('client-id', config.clientId);
+
+                const ws = new WebSocket(url.toString());
+                
+                ws.onopen = () => {
+                    log('WebSocket连接测试成功', 'success');
+                    ws.close();
+                };
+
+                ws.onerror = (error) => {
+                    log(`WebSocket连接测试失败: ${error.message || '未知错误'}`, 'error');
+                };
+
+                setTimeout(() => {
+                    if (ws.readyState === WebSocket.CONNECTING) {
+                        log('WebSocket连接测试超时', 'error');
+                        ws.close();
+                    }
+                }, 5000);
+            } catch (error) {
+                log(`WebSocket连接测试失败: ${error.message}`, 'error');
+            }
+        }
+
+        // 发送测试消息
+        function sendTestMessage() {
+            const message = testInput.value.trim();
+            if (message === '' || !websocket || websocket.readyState !== WebSocket.OPEN) {
+                log('请输入测试消息或检查连接状态', 'error');
+                return;
+            }
+
+            try {
+                const listenMessage = {
+                    type: 'listen',
+                    mode: 'manual',
+                    state: 'detect',
+                    text: message
+                };
+
+                websocket.send(JSON.stringify(listenMessage));
+                addMessage(message, true);
+                log(`发送测试消息: ${message}`, 'info');
+
+                testInput.value = '';
+            } catch (error) {
+                log(`发送测试消息错误: ${error.message}`, 'error');
+            }
+        }
+
+        // 开始场景
+        function startScenario() {
+            if (!currentScenario || !websocket || websocket.readyState !== WebSocket.OPEN) {
+                log('请先选择场景或检查连接状态', 'error');
+                return;
+            }
+
+            try {
+                const childName = document.getElementById('childName').value.trim() || '小明';
+                
+                const scenarioMessage = {
+                    type: 'scenario',
+                    action: 'start',
+                    scenario_id: currentScenario.id,
+                    agent_id: currentAgent,
+                    child_name: childName
+                };
+
+                websocket.send(JSON.stringify(scenarioMessage));
+                log(`开始场景: ${currentScenario.scenarioName}`, 'info');
+                addMessage(`[开始场景] ${currentScenario.scenarioName}`, false);
+            } catch (error) {
+                log(`开始场景错误: ${error.message}`, 'error');
+            }
+        }
+
+        // 停止场景
+        function stopScenario() {
+            if (!websocket || websocket.readyState !== WebSocket.OPEN) {
+                log('WebSocket连接不可用', 'error');
+                return;
+            }
+
+            try {
+                const scenarioMessage = {
+                    type: 'scenario',
+                    action: 'stop'
+                };
+
+                websocket.send(JSON.stringify(scenarioMessage));
+                log('停止场景', 'info');
+                addMessage('[停止场景]', false);
+            } catch (error) {
+                log(`停止场景错误: ${error.message}`, 'error');
+            }
+        }
+
+        // 测试触发
+        function testTrigger() {
+            if (!currentScenario || !websocket || websocket.readyState !== WebSocket.OPEN) {
+                log('请先选择场景或检查连接状态', 'error');
+                return;
+            }
+
+            const triggerType = document.getElementById('triggerType').value;
+            const triggerValue = document.getElementById('triggerValue').value.trim();
+
+            if (!triggerValue) {
+                log('请输入触发值', 'error');
+                return;
+            }
+
+            try {
+                const triggerMessage = {
+                    type: 'scenario',
+                    action: 'trigger',
+                    scenario_id: currentScenario.id,
+                    agent_id: currentAgent,
+                    trigger_type: triggerType,
+                    trigger_value: triggerValue
+                };
+
+                websocket.send(JSON.stringify(triggerMessage));
+                log(`测试触发: ${triggerType} - ${triggerValue}`, 'info');
+                addMessage(`[测试触发] ${triggerType}: ${triggerValue}`, true);
+            } catch (error) {
+                log(`测试触发错误: ${error.message}`, 'error');
+            }
+        }
+
+        // 语音录制相关变量
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let isRecording = false;
+
+        // 初始化语音录制
+        async function initVoiceRecording() {
+            try {
+                updateVoiceStatus('正在初始化...', 'info');
+                
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    audio: {
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                        sampleRate: 16000,
+                        channelCount: 1
+                    }
+                });
+
+                mediaRecorder = new MediaRecorder(stream);
+                
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        audioChunks.push(event.data);
+                    }
+                };
+
+                mediaRecorder.onstop = async () => {
+                    if (audioChunks.length === 0) {
+                        log('没有录制到音频数据', 'error');
+                        updateVoiceStatus('录制失败', 'error');
+                        return;
+                    }
+
+                    const blob = new Blob(audioChunks, { type: audioChunks[0].type });
+                    audioChunks = [];
+
+                    try {
+                        const arrayBuffer = await blob.arrayBuffer();
+                        const uint8Array = new Uint8Array(arrayBuffer);
+
+                        if (websocket && websocket.readyState === WebSocket.OPEN) {
+                            // 发送语音数据
+                            websocket.send(uint8Array);
+                            log(`发送语音数据: ${(arrayBuffer.byteLength / 1024).toFixed(2)} KB`, 'success');
+                            updateVoiceStatus('发送成功', 'success');
+                        } else {
+                            log('WebSocket连接不可用', 'error');
+                            updateVoiceStatus('连接失败', 'error');
+                        }
+                    } catch (error) {
+                        log(`处理语音数据错误: ${error.message}`, 'error');
+                        updateVoiceStatus('处理失败', 'error');
+                    }
+                };
+
+                log('语音录制初始化成功', 'success');
+                updateVoiceStatus('就绪', 'success');
+                return true;
+            } catch (error) {
+                log(`语音录制初始化失败: ${error.message}`, 'error');
+                updateVoiceStatus('初始化失败', 'error');
+                return false;
+            }
+        }
+
+        // 开始语音录制
+        async function startVoiceRecording() {
+            if (isRecording) return;
+
+            try {
+                if (!mediaRecorder) {
+                    const initialized = await initVoiceRecording();
+                    if (!initialized) {
+                        return;
+                    }
+                }
+
+                audioChunks = [];
+                mediaRecorder.start();
+                isRecording = true;
+
+                const recordButton = document.getElementById('recordButton');
+                recordButton.textContent = '停止录音';
+                recordButton.classList.add('recording');
+
+                log('开始语音录制', 'info');
+            } catch (error) {
+                log(`开始语音录制错误: ${error.message}`, 'error');
+            }
+        }
+
+        // 停止语音录制
+        function stopVoiceRecording() {
+            if (!isRecording || !mediaRecorder) return;
+
+            try {
+                mediaRecorder.stop();
+                isRecording = false;
+
+                const recordButton = document.getElementById('recordButton');
+                recordButton.textContent = '开始录音';
+                recordButton.classList.remove('recording');
+
+                log('停止语音录制', 'info');
+            } catch (error) {
+                log(`停止语音录制错误: ${error.message}`, 'error');
+            }
+        }
+
+        // 更新语音状态
+        function updateVoiceStatus(status, type = 'info') {
+            const voiceStatus = document.getElementById('voiceStatus');
+            voiceStatus.textContent = status;
+            
+            if (type === 'error') {
+                voiceStatus.style.color = '#db4437';
+            } else if (type === 'success') {
+                voiceStatus.style.color = '#0f9d58';
+            } else {
+                voiceStatus.style.color = '#666';
+            }
+        }
+
+        // 添加语音录制事件监听器
+        function initVoiceRecordingListeners() {
+            const recordButton = document.getElementById('recordButton');
+            const stopRecordButton = document.getElementById('stopRecordButton');
+
+            recordButton.addEventListener('click', () => {
+                if (isRecording) {
+                    stopVoiceRecording();
+                } else {
+                    startVoiceRecording();
+                }
+            });
+
+            stopRecordButton.addEventListener('click', stopVoiceRecording);
+        }
+
+        // 更新初始化函数
+        function initApp() {
+            initEventListeners();
+            initVoiceRecordingListeners();
+            log('AI陪伴功能测试页面初始化完成', 'success');
+        }
+
+        // 启动应用
+        initApp();
+    </script>
+</body>
+
+</html> 

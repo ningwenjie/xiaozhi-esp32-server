@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xiaozhi.modules.agent.dao.LearningRecordDao">
+    
+    <!-- 根据儿童姓名查询学习记录 -->
+    <select id="selectByChildName" resultType="xiaozhi.modules.agent.entity.LearningRecordEntity">
+        SELECT * FROM ai_child_learning_record 
+        WHERE child_name = #{childName}
+        ORDER BY created_at DESC
+    </select>
+    
+    <!-- 根据场景ID查询学习记录 -->
+    <select id="selectByScenarioId" resultType="xiaozhi.modules.agent.entity.LearningRecordEntity">
+        SELECT * FROM ai_child_learning_record 
+        WHERE scenario_id = #{scenarioId}
+        ORDER BY created_at DESC
+    </select>
+    
+    <!-- 根据会话ID查询学习记录 -->
+    <select id="selectBySessionId" resultType="xiaozhi.modules.agent.entity.LearningRecordEntity">
+        SELECT * FROM ai_child_learning_record 
+        WHERE session_id = #{sessionId}
+        ORDER BY created_at ASC
+    </select>
+    
+    <!-- 根据儿童姓名和日期范围查询学习记录 -->
+    <select id="selectByChildNameAndDateRange" resultType="xiaozhi.modules.agent.entity.LearningRecordEntity">
+        SELECT * FROM ai_child_learning_record 
+        WHERE child_name = #{childName} 
+        AND learning_date BETWEEN #{startDate} AND #{endDate}
+        ORDER BY learning_date DESC, created_at DESC
+    </select>
+    
+    <!-- 根据场景ID和儿童姓名查询学习记录 -->
+    <select id="selectByScenarioIdAndChildName" resultType="xiaozhi.modules.agent.entity.LearningRecordEntity">
+        SELECT * FROM ai_child_learning_record 
+        WHERE scenario_id = #{scenarioId} AND child_name = #{childName}
+        ORDER BY created_at DESC
+    </select>
+    
+    <!-- 统计儿童的学习成功率 -->
+    <select id="getSuccessRate" resultType="java.lang.Double">
+        SELECT 
+            CASE 
+                WHEN COUNT(*) = 0 THEN 0.0
+                ELSE ROUND(SUM(is_success) * 100.0 / COUNT(*), 2)
+            END
+        FROM ai_child_learning_record 
+        WHERE child_name = #{childName}
+        <if test="scenarioId != null and scenarioId != ''">
+            AND scenario_id = #{scenarioId}
+        </if>
+    </select>
+    
+    <!-- 统计儿童的学习次数 -->
+    <select id="getLearningCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) 
+        FROM ai_child_learning_record 
+        WHERE child_name = #{childName}
+        <if test="scenarioId != null and scenarioId != ''">
+            AND scenario_id = #{scenarioId}
+        </if>
+    </select>
+    
+</mapper> 

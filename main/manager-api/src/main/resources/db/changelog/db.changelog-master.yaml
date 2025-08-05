@@ -282,3 +282,10 @@ databaseChangeLog:
         - sqlFile:
             encoding: utf8
             path: classpath:db/changelog/202507081646.sql
+  - changeSet:
+      id: 202412190001
+      author: AI Assistant
+      changes:
+        - sqlFile:
+            encoding: utf8
+            path: classpath:db/changelog/202412190001.sql

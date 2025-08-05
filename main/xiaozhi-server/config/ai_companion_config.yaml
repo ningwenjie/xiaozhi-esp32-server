@@ -1,0 +1,172 @@
+# AI陪伴功能配置
+# 启用AI陪伴功能模块
+
+# 功能开关
+ai_companion:
+  enabled: true  # 是否启用AI陪伴功能
+  
+  # 场景触发配置
+  scenario_trigger:
+    enabled: true
+    voice_trigger: true      # 启用语音触发
+    visual_trigger: true     # 启用视觉触发
+    button_trigger: true     # 启用按键触发
+    
+  # 对话执行配置
+  dialogue_executor:
+    enabled: true
+    max_attempts: 3         # 最大尝试次数
+    timeout_seconds: 10     # 等待超时时间
+    child_name_default: "小朋友"  # 默认儿童姓名
+    
+  # 学习记录配置
+  learning_record:
+    enabled: true
+    auto_save: true         # 自动保存学习记录
+    session_timeout: 3600   # 会话超时时间(秒)
+    
+  # API配置
+  api:
+    manage_api_url: "http://localhost:8080"  # 管理API地址
+    timeout: 5              # API请求超时时间
+    
+  # 日志配置
+  logging:
+    level: "INFO"
+    enable_debug: false
+    
+# 场景类型配置
+scenario_types:
+  express_needs:
+    name: "表达需求"
+    description: "帮助儿童练习表达基本需求"
+    difficulty_levels: [1, 2, 3]
+    target_ages: ["3-6", "7-12"]
+    
+  greeting:
+    name: "问候"
+    description: "练习基本的问候和礼貌用语"
+    difficulty_levels: [1, 2]
+    target_ages: ["3-6", "7-12"]
+    
+  emotion:
+    name: "情感表达"
+    description: "学习表达各种情感和感受"
+    difficulty_levels: [2, 3, 4]
+    target_ages: ["3-6", "7-12"]
+    
+  instruction:
+    name: "指令执行"
+    description: "练习理解和执行简单指令"
+    difficulty_levels: [1, 2, 3]
+    target_ages: ["3-6", "7-12"]
+
+# 触发方式配置
+trigger_types:
+  voice:
+    name: "语音触发"
+    description: "通过语音关键词触发场景"
+    
+  visual:
+    name: "视觉触发"
+    description: "通过识别卡片或图片触发场景"
+    
+  button:
+    name: "按键触发"
+    description: "通过物理按键触发场景"
+
+# 步骤类型配置
+step_types:
+  normal:
+    name: "普通步骤"
+    description: "常规对话步骤"
+    
+  start:
+    name: "开始步骤"
+    description: "场景开始步骤"
+    
+  end:
+    name: "结束步骤"
+    description: "场景结束步骤"
+    
+  branch:
+    name: "分支步骤"
+    description: "条件分支步骤"
+
+# 成功条件配置
+success_conditions:
+  exact:
+    name: "完全匹配"
+    description: "用户回答必须与期望答案完全一致"
+    
+  partial:
+    name: "部分匹配"
+    description: "用户回答包含期望的关键词即可"
+    
+  keyword:
+    name: "关键词匹配"
+    description: "用户回答包含任意期望关键词即可"
+
+# 手势提示配置
+gesture_hints:
+  point_mouth:
+    name: "指嘴巴"
+    description: "指向嘴巴的手势"
+    
+  point_stomach:
+    name: "指肚子"
+    description: "指向肚子的手势"
+    
+  point_eyes:
+    name: "指眼睛"
+    description: "指向眼睛的手势"
+    
+  point_legs:
+    name: "指腿"
+    description: "指向腿的手势"
+    
+  clap_hands:
+    name: "拍手"
+    description: "拍手的手势"
+    
+  wave_hand:
+    name: "挥手"
+    description: "挥手的手势"
+
+# 默认场景模板
+default_scenarios:
+  - scenario_code: "express_needs_thirsty"
+    scenario_name: "表达需求-口渴"
+    scenario_type: "express_needs"
+    trigger_type: "voice"
+    trigger_keywords: '["渴了", "口渴", "喝水"]'
+    description: "练习表达口渴的需求"
+    difficulty_level: 1
+    target_age: "3-6"
+    
+  - scenario_code: "express_needs_hungry"
+    scenario_name: "表达需求-饥饿"
+    scenario_type: "express_needs"
+    trigger_type: "voice"
+    trigger_keywords: '["饿了", "饥饿", "吃饭"]'
+    description: "练习表达饥饿的需求"
+    difficulty_level: 1
+    target_age: "3-6"
+    
+  - scenario_code: "greeting_basic"
+    scenario_name: "基础问候"
+    scenario_type: "greeting"
+    trigger_type: "voice"
+    trigger_keywords: '["你好", "您好", "早上好"]'
+    description: "练习基本的问候语"
+    difficulty_level: 1
+    target_age: "3-6"
+    
+  - scenario_code: "emotion_happy"
+    scenario_name: "情感表达-开心"
+    scenario_type: "emotion"
+    trigger_type: "voice"
+    trigger_keywords: '["开心", "高兴", "快乐"]'
+    description: "练习表达开心的情感"
+    difficulty_level: 2
+    target_age: "3-6" 
