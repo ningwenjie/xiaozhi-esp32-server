@@ -16,7 +16,7 @@ def read_config(config_path):
 
 
 def load_config():
-    """加载配置文件"""
+    """只加载 data/.config.yaml 配置文件"""
     from core.utils.cache.manager import cache_manager, CacheType
 
     # 检查缓存
@@ -24,22 +24,13 @@ def load_config():
     if cached_config is not None:
         return cached_config
 
-    default_config_path = get_project_dir() + "config.yaml"
-    custom_config_path = get_project_dir() + "data/.config.yaml"
+    custom_config_path = get_project_dir() + "data/config.yaml"
+    config = read_config(custom_config_path)
 
-    # 加载默认配置
-    default_config = read_config(default_config_path)
-    custom_config = read_config(custom_config_path)
+    if config.get("manager-api", {}).get("url"):
+        config = get_config_from_api(config)
 
-    if custom_config.get("manager-api", {}).get("url"):
-        config = get_config_from_api(custom_config)
-    else:
-        # 合并配置
-        config = merge_configs(default_config, custom_config)
-    # 初始化目录
     ensure_directories(config)
-
-    # 缓存配置
     cache_manager.set(CacheType.CONFIG, "main_config", config)
     return config
 
